@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -41,9 +42,32 @@ public class UserController {
     @GetMapping("/id/{id}")
     public ResponseEntity<User> getUserById(@PathVariable ObjectId id){
         try{
+            List<User> allUsers = userService.getAllEntries();
 
+            Optional<User> foundUser = allUsers.stream().
+                    filter(user -> user.getId().equals(id))
+                    .findAny();
+
+            if(foundUser.isPresent()) return ResponseEntity.ok(foundUser.get());
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateUser(@RequestBody User user){
+        try{
+            User userInDb = userService.findByUsername(user.getUsername());
+            if(userInDb != null){
+                userInDb.setUsername(user.getUsername());
+                userInDb.setPassword(user.getPassword());
+                userService.saveEntry(userInDb);
+                return ResponseEntity.ok(userInDb);
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 }
