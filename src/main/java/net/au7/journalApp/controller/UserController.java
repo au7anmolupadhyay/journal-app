@@ -55,15 +55,28 @@ public class UserController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateUser(@RequestBody User user){
+    @PutMapping("/{userName}")
+    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable String userName){
         try{
-            User userInDb = userService.findByUsername(user.getUsername());
+            User userInDb = userService.findByUsername(userName);
             if(userInDb != null){
                 userInDb.setUsername(user.getUsername());
                 userInDb.setPassword(user.getPassword());
                 userService.saveEntry(userInDb);
                 return ResponseEntity.ok(userInDb);
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteUser(@RequestBody User user){
+        try{
+            User userToBeDeleted = userService.findByUsername(user.getUsername());
+            if(userToBeDeleted != null){
+                userService.deleteByUsername(userToBeDeleted.getUsername());
             }
             return ResponseEntity.notFound().build();
         } catch (Exception e) {

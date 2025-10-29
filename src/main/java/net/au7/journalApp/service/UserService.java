@@ -1,6 +1,5 @@
 package net.au7.journalApp.service;
 
-import net.au7.journalApp.entity.JournalEntry;
 import net.au7.journalApp.entity.User;
 import net.au7.journalApp.repository.UserRepository;
 import org.bson.types.ObjectId;
@@ -35,5 +34,9 @@ public class UserService {
 
     public User findByUsername(String username){
         return userRepository.findByUsername(username);
+    }
+
+    public void deleteByUsername(String username){
+        userRepository.deleteByUsername(username);
     }
 }
