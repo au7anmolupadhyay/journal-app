@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.file.Path;
 import java.util.*;
 
 @RestController
@@ -61,24 +62,28 @@ public class JournalEntryController {
             return ResponseEntity.noContent().build();
     }
 
-//    @PutMapping("/id/{id}")
-//    public ResponseEntity<?> updateEntryById(@PathVariable ObjectId id, @RequestBody JournalEntry newEntry) {
-////        JournalEntry oldEntry = journalEntryService.findEntryById(id)
-////                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entry not found"));
-////
-////        try{
-////            if (newEntry.getContent() != null && !newEntry.getContent().isEmpty()) {
-////                oldEntry.setContent(newEntry.getContent());
-////            }
-////            if (newEntry.getTitle() != null && !newEntry.getTitle().isEmpty()) {
-////                oldEntry.setTitle(newEntry.getTitle());
-////            }
-////            journalEntryService.saveEntry(oldEntry, user);
-////            return new ResponseEntity<>(oldEntry, HttpStatus.ACCEPTED);
-////        } catch (Exception e) {
-////            return ResponseEntity.badRequest().build();
-////        }
-//    }
+    @PutMapping("/{username}/{id}")
+    public ResponseEntity<?> updateEntryById(
+            @PathVariable ObjectId id,
+            @RequestBody JournalEntry newEntry,
+            @PathVariable String username
+    ) {
+        JournalEntry oldEntry = journalEntryService.findEntryById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entry not found"));
+
+        try{
+            if (newEntry.getContent() != null && !newEntry.getContent().isEmpty()) {
+                oldEntry.setContent(newEntry.getContent());
+            }
+            if (newEntry.getTitle() != null && !newEntry.getTitle().isEmpty()) {
+                oldEntry.setTitle(newEntry.getTitle());
+            }
+            journalEntryService.saveEntry(oldEntry);
+            return new ResponseEntity<>(oldEntry, HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
 
 }

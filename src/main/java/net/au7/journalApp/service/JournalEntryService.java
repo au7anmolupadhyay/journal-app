@@ -20,6 +20,10 @@ public class JournalEntryService {
     @Autowired
     private UserService userService;
 
+    public void saveEntry(JournalEntry journalEntry){
+        journalEntryRepository.save(journalEntry);
+    }
+
     public void saveEntry(JournalEntry journalEntry, String userName){
         User user = userService.findByUsername(userName);
         journalEntry.setDate(LocalDateTime.now());
