@@ -31,7 +31,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User newUser){
         try{
-            userService.saveEntry(newUser);
+            userService.saveNewUser(newUser);
             URI location = URI.create("/users/" + newUser.getId());
             return ResponseEntity.created(location).body(newUser);
         } catch (Exception e) {
