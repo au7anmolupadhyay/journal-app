@@ -27,12 +27,12 @@ public class SpringSecurity {
         http
                 .authorizeHttpRequests(auth -> auth
                         // allow signup (public)
-                        .requestMatchers("/users/**").permitAll()
+                        .requestMatchers("/public/**").permitAll()
 
                         // only authenticated users can access journal APIs
-                        .requestMatchers("/journal/**").authenticated()
+                        .requestMatchers("/journal/**", "/users/**").authenticated()
 
-                        // everything else allowed
+                        // everything else also required authentication
                         .anyRequest().permitAll()
                 )
                 .csrf(csrf -> csrf.disable())   // disable CSRF for REST APIs

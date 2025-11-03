@@ -5,6 +5,9 @@ import net.au7.journalApp.service.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -18,26 +21,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(){
-        try{
-            List<User> allUsers = userService.getAllEntries();
-            return ResponseEntity.ok(allUsers);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User newUser){
-        try{
-            userService.saveNewUser(newUser);
-            URI location = URI.create("/users/" + newUser.getId());
-            return ResponseEntity.created(location).body(newUser);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/id/{id}")
     public ResponseEntity<User> getUserById(@PathVariable ObjectId id){
@@ -55,26 +40,27 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{userName}")
-    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable String userName){
+    @PutMapping
+    public ResponseEntity<?> updateUser(@RequestBody User user){
         try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String userName = authentication.getName();
             User userInDb = userService.findByUsername(userName);
-            if(userInDb != null){
                 userInDb.setUsername(user.getUsername());
-                userInDb.setPassword(user.getPassword());
+                userInDb.setPassword(passwordEncoder.encode(user.getPassword()));
                 userService.saveEntry(userInDb);
                 return ResponseEntity.ok(userInDb);
-            }
-            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteUser(@RequestBody User user){
+    public ResponseEntity<Void> deleteUser(){
         try{
-            User userToBeDeleted = userService.findByUsername(user.getUsername());
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+            User userToBeDeleted = userService.findByUsername(username);
             if(userToBeDeleted != null){
                 userService.deleteByUsername(userToBeDeleted.getUsername());
             }
