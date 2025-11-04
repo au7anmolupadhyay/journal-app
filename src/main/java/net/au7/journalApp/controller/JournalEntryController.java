@@ -82,28 +82,40 @@ public class JournalEntryController {
         return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/{username}/{id}")
-    public ResponseEntity<?> updateEntryById(
-            @PathVariable ObjectId id,
-            @RequestBody JournalEntry newEntry,
-            @PathVariable String username
-    ) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateJournalById(@PathVariable ObjectId id, @RequestBody JournalEntry newEntry) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userService.findByUsername(username);
+        List<JournalEntry> foundUser = user.getJournalEntries()
+                .stream()
+                .filter(x -> x.getId().equals(id))
+                .toList();
+
+        if (foundUser.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entry not found");
+        }
+
         JournalEntry oldEntry = journalEntryService.findEntryById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Entry not found"));
 
-        try{
+        try {
             if (newEntry.getContent() != null && !newEntry.getContent().isEmpty()) {
                 oldEntry.setContent(newEntry.getContent());
             }
             if (newEntry.getTitle() != null && !newEntry.getTitle().isEmpty()) {
                 oldEntry.setTitle(newEntry.getTitle());
             }
+
             journalEntryService.saveEntry(oldEntry);
             return new ResponseEntity<>(oldEntry, HttpStatus.ACCEPTED);
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
+
 
 
 }
