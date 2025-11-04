@@ -73,7 +73,7 @@ public class JournalEntryController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{myid}")
     public ResponseEntity<?> deleteEntryById(@PathVariable ObjectId id){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
