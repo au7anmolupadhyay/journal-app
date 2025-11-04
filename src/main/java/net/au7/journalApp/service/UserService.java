@@ -29,6 +29,12 @@ public class UserService {
         userRepository.save(userEntry);
     }
 
+    public void saveAdmin(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(List.of("USER","ADMIN"));
+        userRepository.save(user);
+    }
+
     public List<User> getAllEntries(){
         return userRepository.findAll();
     }
@@ -49,4 +55,6 @@ public class UserService {
     public void deleteByUsername(String username){
         userRepository.deleteByUsername(username);
     }
+
+
 }

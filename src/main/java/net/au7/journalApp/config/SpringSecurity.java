@@ -31,6 +31,7 @@ public class SpringSecurity {
 
                         // only authenticated users can access journal APIs
                         .requestMatchers("/journal/**", "/users/**").authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         // everything else also required authentication
                         .anyRequest().permitAll()
