@@ -10,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,7 +47,7 @@ public class UserController {
             User userInDb = userService.findByUsername(userName);
                 userInDb.setUsername(user.getUsername());
                 userInDb.setPassword(passwordEncoder.encode(user.getPassword()));
-                userService.saveEntry(userInDb);
+                userService.saveNewUser(userInDb);
                 return ResponseEntity.ok(userInDb);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
