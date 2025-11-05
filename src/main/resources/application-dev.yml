@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: Just for me
+
+  data:
+    mongodb:
+      uri: mongodb+srv://au7_anmol_upadhyay:fWTdybUrJNvrCv0S@cluster0.g0m4djj.mongodb.net/?appName=Cluster0
+      database: journaldb
+      auto-index-creation: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
