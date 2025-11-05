@@ -1,0 +1,36 @@
+package net.au7.journalApp.service;
+
+import net.au7.journalApp.entity.User;
+import net.au7.journalApp.repository.UserRepository;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+public class UserServiceTest {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Disabled
+    @Test
+    public void testFindByUsername(){
+        User user = userRepository.findByUsername("Anmol");
+        assertFalse(user.getJournalEntries().isEmpty());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1,2,3",
+            "4,5,9",
+            "1,5,5"
+    })
+    public void test(int a, int b, int expected){
+        assertEquals(expected, a+b);
+    }
+}
