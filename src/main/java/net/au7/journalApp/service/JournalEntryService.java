@@ -4,6 +4,9 @@ import net.au7.journalApp.entity.JournalEntry;
 import net.au7.journalApp.entity.User;
 import net.au7.journalApp.repository.JournalEntryRepository;
 import org.bson.types.ObjectId;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +60,6 @@ public class JournalEntryService {
                 journalEntryRepository.deleteById(String.valueOf(id));
             }
         } catch (Exception e) {
-            System.out.println("error:" + e);
             throw new RuntimeException("An error occurred while deleting an entry: ", e);
         }
         return found;

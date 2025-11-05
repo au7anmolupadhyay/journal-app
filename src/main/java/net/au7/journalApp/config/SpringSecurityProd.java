@@ -5,9 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,12 +14,12 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@Profile("dev")
-public class SpringSecurity {
+@Profile("prod")
+public class SpringSecurityProd {
 
     private final UserDetailsService userDetailsService;
 
-    public SpringSecurity(UserDetailsService userDetailsService) {
+    public SpringSecurityProd(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
@@ -28,15 +27,8 @@ public class SpringSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        // allow signup (public)
-                        .requestMatchers("/public/**").permitAll()
-
-                        // only authenticated users can access journal APIs
-                        .requestMatchers("/journal/**", "/users/**").authenticated()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-
-                        // everything else also required authentication
-                        .anyRequest().permitAll()
+                        // everything requires authentication
+                        .anyRequest().authenticated()
                 )
                 .csrf(csrf -> csrf.disable())   // disable CSRF for REST APIs
                 .httpBasic(basic -> {})         // enable Basic auth
