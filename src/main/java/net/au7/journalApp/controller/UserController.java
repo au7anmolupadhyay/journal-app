@@ -13,7 +13,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -76,7 +78,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<?> greetings(){
+    public ResponseEntity<Map<String, String>> greetings(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         WeatherResponse weatherResponse = weatherService.getWeather("Mumbai");
         String greetings = "";
@@ -84,6 +86,11 @@ public class UserController {
             greetings = "Temperature is " + weatherResponse.getCurrent().getTemperature() + " and it feels like :"
             + weatherResponse.getCurrent().getFeelslike();
         }
-        return new ResponseEntity<>("Hi " + authentication.getName(), greetings ,HttpStatus.OK());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("user", authentication.getName());
+        response.put("message", greetings);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
