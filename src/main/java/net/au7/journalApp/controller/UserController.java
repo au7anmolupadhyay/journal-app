@@ -1,9 +1,12 @@
 package net.au7.journalApp.controller;
 
+import net.au7.journalApp.api.response.WeatherResponse;
 import net.au7.journalApp.entity.User;
 import net.au7.journalApp.service.UserService;
+import net.au7.journalApp.service.WeatherService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +25,9 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private WeatherService weatherService;
 
     @GetMapping("/id/{id}")
     public ResponseEntity<User> getUserById(@PathVariable ObjectId id){
@@ -72,6 +78,12 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> greetings(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return ResponseEntity.ok("Hi " + authentication.getName());
+        WeatherResponse weatherResponse = weatherService.getWeather("Mumbai");
+        String greetings = "";
+        if(weatherResponse != null){
+            greetings = "Temperature is " + weatherResponse.getCurrent().getTemperature() + " and it feels like :"
+            + weatherResponse.getCurrent().getFeelslike();
+        }
+        return new ResponseEntity<>("Hi " + authentication.getName(), greetings ,HttpStatus.OK());
     }
 }
