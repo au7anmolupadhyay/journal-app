@@ -10,6 +10,14 @@ spring:
 
 server:
   port: 8080
+
+weather:
+  api:
+    key: 0c9d97a1242719cef78916cc667c1e23
+
+quotes:
+  api:
+    key: +n0AqD3hLN0Ig9Jh/XuMHw==95hOn31kp7cr0MI5
 #
 #logging:
 #  level:
