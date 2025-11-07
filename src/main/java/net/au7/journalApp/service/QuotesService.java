@@ -1,6 +1,7 @@
 package net.au7.journalApp.service;
 
 import net.au7.journalApp.api.response.QuotesResponse;
+import net.au7.journalApp.cache.AppCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -13,11 +14,15 @@ public class QuotesService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private AppCache appCache;
+
     @Value("${quotes.api.key}")
-    private String apiKey;
-    private static final String API_URL = "https://api.api-ninjas.com/v2/quotes?categories=success,wisdom";
+        private String apiKey;
 
     public QuotesResponse[] getQuotes() {
+
+        String API_URL = appCache.APP_CACHE.get("quotes_api");
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Api-Key", apiKey);
