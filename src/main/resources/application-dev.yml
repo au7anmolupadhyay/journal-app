@@ -8,9 +8,8 @@ spring:
       database: journaldb
       auto-index-creation: true
 
-  redis:
-    host: localhost
-    port: 6379
+    redis:
+      url: redis://default:VVcicIx6vpTwxe81YAZTfCTY1OwYCQiL@redis-19143.crce217.ap-south-1-1.ec2.cloud.redislabs.com:19143
 
   mail:
     host: smtp.gmail.com
