@@ -98,6 +98,7 @@ public class UserController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
     @GetMapping("/quotes")
     public ResponseEntity<Map<String, String>> getQuotes() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
